@@ -17,6 +17,11 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     highestValue = 0;
+    NSString *path = [NSString stringWithFormat:@"%@/SD0010.mp3", [[NSBundle mainBundle] resourcePath]];
+    NSURL *soundUrl = [NSURL fileURLWithPath:path];
+    
+    self.audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:soundUrl error:nil];
+    
     self.motionManager = [[CMMotionManager alloc] init];
     self.deviceUpdateQueue = [NSOperationQueue new];
     accelDataWindow = [NSMutableArray array];
@@ -40,7 +45,9 @@
         if (exceededThreshold) {
             [accelDataWindow addObject:[NSNumber numberWithDouble:[self magnitude:motion]]];
             [accelDataWindow addObject:motion];
-            [self didHit];
+            if ([self didHit]) {
+                [self playInstrument];
+            }
         }
         
     }];
@@ -63,6 +70,11 @@
 
 - (double)magnitude:(CMDeviceMotion*)motion {
     return sqrt(pow(motion.userAcceleration.x,2)+pow(motion.userAcceleration.y,2)+pow(motion.userAcceleration.z,2));
+}
+
+- (void)playInstrument {
+    [self.audioPlayer stop];
+    [self.audioPlayer play];
 }
 
 @end

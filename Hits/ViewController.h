@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import <CoreMotion/CoreMotion.h>
+#import <AVFoundation/AVFoundation.h>
 
 @interface ViewController : UIViewController {
     BOOL isVertical;
@@ -18,6 +19,7 @@
 
 @property (strong, nonatomic) CMMotionManager *motionManager;
 @property (strong, nonatomic) NSOperationQueue *deviceUpdateQueue;
+@property (strong, nonatomic) AVAudioPlayer *audioPlayer;
 
 @end
 
