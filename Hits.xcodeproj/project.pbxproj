@@ -14,6 +14,7 @@
 		116B0BBC1B0291000002EEE8 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 116B0BBB1B0291000002EEE8 /* Images.xcassets */; };
 		116B0BBF1B0291000002EEE8 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 116B0BBD1B0291000002EEE8 /* LaunchScreen.xib */; };
 		116B0BCB1B0291000002EEE8 /* HitsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 116B0BCA1B0291000002EEE8 /* HitsTests.m */; };
+		116B0BD51B02BFA50002EEE8 /* SD0010.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 116B0BD41B02BFA50002EEE8 /* SD0010.mp3 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,6 +41,7 @@
 		116B0BC41B0291000002EEE8 /* HitsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HitsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		116B0BC91B0291000002EEE8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		116B0BCA1B0291000002EEE8 /* HitsTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HitsTests.m; sourceTree = "<group>"; };
+		116B0BD41B02BFA50002EEE8 /* SD0010.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = SD0010.mp3; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,6 +83,7 @@
 		116B0BAD1B0291000002EEE8 /* Hits */ = {
 			isa = PBXGroup;
 			children = (
+				116B0BD61B02C3B50002EEE8 /* Sounds */,
 				116B0BB21B0291000002EEE8 /* AppDelegate.h */,
 				116B0BB31B0291000002EEE8 /* AppDelegate.m */,
 				116B0BB51B0291000002EEE8 /* ViewController.h */,
@@ -117,6 +120,14 @@
 				116B0BC91B0291000002EEE8 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		116B0BD61B02C3B50002EEE8 /* Sounds */ = {
+			isa = PBXGroup;
+			children = (
+				116B0BD41B02BFA50002EEE8 /* SD0010.mp3 */,
+			);
+			name = Sounds;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -200,6 +211,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				116B0BD51B02BFA50002EEE8 /* SD0010.mp3 in Resources */,
 				116B0BBA1B0291000002EEE8 /* Main.storyboard in Resources */,
 				116B0BBF1B0291000002EEE8 /* LaunchScreen.xib in Resources */,
 				116B0BBC1B0291000002EEE8 /* Images.xcassets in Resources */,
