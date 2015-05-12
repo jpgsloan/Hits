@@ -13,6 +13,7 @@
     BOOL isVertical;
     BOOL exceededThreshold;
     NSMutableArray *accelDataWindow;
+    double highestValue;
 }
 
 @property (strong, nonatomic) CMMotionManager *motionManager;

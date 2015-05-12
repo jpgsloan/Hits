@@ -16,6 +16,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    highestValue = 0;
     self.motionManager = [[CMMotionManager alloc] init];
     self.deviceUpdateQueue = [NSOperationQueue new];
     accelDataWindow = [NSMutableArray array];
@@ -37,17 +38,9 @@
         }
         
         if (exceededThreshold) {
-            if (mag < 4) {
-                exceededThreshold = NO;
-                if ([self didHit]) {
-                    NSLog(@"WAS A HIT");
-                } else {
-                    NSLog(@"WAS NOT A HIT");
-                }
-                [accelDataWindow removeAllObjects];
-            } else {
-                [accelDataWindow addObject:[NSNumber numberWithDouble:[self magnitude:motion]]];
-            }
+            [accelDataWindow addObject:[NSNumber numberWithDouble:[self magnitude:motion]]];
+            [accelDataWindow addObject:motion];
+            [self didHit];
         }
         
     }];
@@ -60,8 +53,12 @@
 }
 
 - (BOOL)didHit {
-    return YES;
-    //if ([self magnitude:motion]);
+    if ([self magnitude:[accelDataWindow lastObject]] < [self magnitude:[accelDataWindow objectAtIndex:accelDataWindow.count-2]]) {
+        [accelDataWindow removeAllObjects];
+        exceededThreshold = NO;
+        return YES;
+    }
+    return NO;
 }
 
 - (double)magnitude:(CMDeviceMotion*)motion {
