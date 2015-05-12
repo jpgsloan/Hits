@@ -43,7 +43,6 @@
         }
         
         if (exceededThreshold) {
-            [accelDataWindow addObject:[NSNumber numberWithDouble:[self magnitude:motion]]];
             [accelDataWindow addObject:motion];
             if ([self didHit]) {
                 [self playInstrument];
