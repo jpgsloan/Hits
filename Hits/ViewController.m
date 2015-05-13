@@ -7,6 +7,8 @@
 //
 
 #import "ViewController.h"
+#import "FISoundEngine.h"
+#import <AudioToolbox/AudioToolbox.h>
 
 @interface ViewController ()
 
@@ -16,11 +18,12 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    highestValue = 0;
-    NSString *path = [NSString stringWithFormat:@"%@/SD0010.mp3", [[NSBundle mainBundle] resourcePath]];
-    NSURL *soundUrl = [NSURL fileURLWithPath:path];
+   
+    NSError *error = nil;
+    FISoundEngine *engine = [FISoundEngine sharedEngine];
+    sound = [engine soundNamed:@"SD0010.wav" maxPolyphony:4 error:&error];
     
-    self.audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:soundUrl error:nil];
+    highestValue = 0;
     
     self.motionManager = [[CMMotionManager alloc] init];
     self.deviceUpdateQueue = [NSOperationQueue new];
@@ -45,6 +48,7 @@
         if (exceededThreshold) {
             [accelDataWindow addObject:motion];
             if ([self didHit]) {
+                NSLog(@"HIT");
                 [self playInstrument];
             }
         }
@@ -59,10 +63,12 @@
 }
 
 - (BOOL)didHit {
-    if ([self magnitude:[accelDataWindow lastObject]] < [self magnitude:[accelDataWindow objectAtIndex:accelDataWindow.count-2]]) {
-        [accelDataWindow removeAllObjects];
-        exceededThreshold = NO;
-        return YES;
+    if ([accelDataWindow count] > 1) {
+        if ([self magnitude:[accelDataWindow lastObject]] < 4) {
+            //[accelDataWindow removeAllObjects];
+            exceededThreshold = NO;
+            return YES;
+        }
     }
     return NO;
 }
@@ -72,8 +78,15 @@
 }
 
 - (void)playInstrument {
-    [self.audioPlayer stop];
-    [self.audioPlayer play];
+    if (!sound) {
+        //NSLog(@"Failed to load sound: %@", error);
+    } else {
+        [sound play];
+    }
+    AVAudioSession *audioSession = [AVAudioSession sharedInstance];
+    NSError *err = nil;
+    [audioSession setCategory: AVAudioSessionCategoryPlayback  error:&err];
+    AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
 }
 
 @end

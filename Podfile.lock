@@ -1,0 +1,10 @@
+PODS:
+  - Finch (1.0.0)
+
+DEPENDENCIES:
+  - finch
+
+SPEC CHECKSUMS:
+  Finch: 1c4160b5dc530ae0bcede7fb05beeb4151b88ded
+
+COCOAPODS: 0.36.0.beta.2

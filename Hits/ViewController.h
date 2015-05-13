@@ -9,17 +9,17 @@
 #import <UIKit/UIKit.h>
 #import <CoreMotion/CoreMotion.h>
 #import <AVFoundation/AVFoundation.h>
-
+#import <FISoundEngine.h>
 @interface ViewController : UIViewController {
     BOOL isVertical;
     BOOL exceededThreshold;
     NSMutableArray *accelDataWindow;
     double highestValue;
+    FISound *sound;
 }
 
 @property (strong, nonatomic) CMMotionManager *motionManager;
 @property (strong, nonatomic) NSOperationQueue *deviceUpdateQueue;
-@property (strong, nonatomic) AVAudioPlayer *audioPlayer;
 
 @end
 

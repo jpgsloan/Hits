@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>6ED079A0-B408-4B28-A3CF-A30A8E87FE99</string>
+	<key>IDESourceControlProjectName</key>
+	<string>Hits</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>2AB46C115B9F39575DD0105BC9F1D7396BEC8D3B</key>
+		<string>https://github.com/jpgsloan/Hits.git</string>
+		<key>A1D8C2D58BFB3E22514FE0D3064C63C7FB5B7392</key>
+		<string>https://github.com/jpgsloan/Virtual-Music.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>Hits.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>2AB46C115B9F39575DD0105BC9F1D7396BEC8D3B</key>
+		<string>..</string>
+		<key>A1D8C2D58BFB3E22514FE0D3064C63C7FB5B7392</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/jpgsloan/Hits.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>2AB46C115B9F39575DD0105BC9F1D7396BEC8D3B</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>A1D8C2D58BFB3E22514FE0D3064C63C7FB5B7392</string>
+			<key>IDESourceControlWCCName</key>
+			<string></string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>2AB46C115B9F39575DD0105BC9F1D7396BEC8D3B</string>
+			<key>IDESourceControlWCCName</key>
+			<string>Hits</string>
+		</dict>
+	</array>
+</dict>
+</plist>
