@@ -16,6 +16,8 @@
     NSMutableArray *accelDataWindow;
     double highestValue;
     FISound *sound;
+    BOOL shouldCancel;
+    BOOL currentlyPlaying;
 }
 
 @property (strong, nonatomic) CMMotionManager *motionManager;

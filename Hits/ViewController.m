@@ -22,6 +22,8 @@
     NSError *error = nil;
     FISoundEngine *engine = [FISoundEngine sharedEngine];
     sound = [engine soundNamed:@"SD0010.wav" maxPolyphony:4 error:&error];
+    currentlyPlaying = NO;
+    shouldCancel = YES;
     
     highestValue = 0;
     
@@ -41,21 +43,34 @@
         }
         
         double mag = [self magnitude:motion];
-        if (mag > 4 && !exceededThreshold) {
-            exceededThreshold = YES;
+        if (mag > 2.5) {
+            if (!currentlyPlaying) {
+                [sound play];
+                currentlyPlaying = YES;
+            }
+            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 0.1 * NSEC_PER_SEC);
+            dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
+                if (shouldCancel) {
+                    [sound stop];
+                    currentlyPlaying = NO;
+                } else {
+                    NSLog(@"playing through");
+                    dispatch_time_t playAgainTime = dispatch_time(DISPATCH_TIME_NOW, (sound.duration-.1) * NSEC_PER_SEC);
+                    dispatch_after(playAgainTime, dispatch_get_main_queue(), ^(void) {
+                        currentlyPlaying = NO;
+                    });
+                }
+            });
         }
         
-        if (exceededThreshold) {
-            [accelDataWindow addObject:motion];
-            if ([self didHit]) {
-                NSLog(@"HIT");
-                [self playInstrument];
-            }
+        if (mag < 2) {
+            shouldCancel = NO;
         }
         
     }];
     
 }
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
