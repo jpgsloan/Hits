@@ -42,29 +42,25 @@
             isVertical = NO;
         }
         
-        double mag = [self magnitude:motion];
-        if (mag > 2.5) {
-            if (!currentlyPlaying) {
-                [sound play];
-                currentlyPlaying = YES;
-            }
-            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 0.1 * NSEC_PER_SEC);
-            dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
-                if (shouldCancel) {
-                    [sound stop];
-                    currentlyPlaying = NO;
-                } else {
-                    NSLog(@"playing through");
-                    dispatch_time_t playAgainTime = dispatch_time(DISPATCH_TIME_NOW, (sound.duration-.1) * NSEC_PER_SEC);
-                    dispatch_after(playAgainTime, dispatch_get_main_queue(), ^(void) {
-                        currentlyPlaying = NO;
-                    });
-                }
-            });
-        }
         
-        if (mag < 2) {
-            shouldCancel = NO;
+        double mag = [self magnitude:motion];
+        NSLog(@"mag: %f", mag);
+        NSLog(@"currently playing? %d", currentlyPlaying);
+        if (mag > 2.5 && !currentlyPlaying) {
+            if (highestValue < mag) {
+                highestValue = mag;
+            } else {
+                currentlyPlaying = YES;
+                NSLog(@"playing sound %d", currentlyPlaying);
+                [sound play];
+                NSLog(@"duraion: %f", sound.duration);
+                dispatch_time_t playTime = dispatch_time(DISPATCH_TIME_NOW, sound.duration * NSEC_PER_SEC);
+                dispatch_after(playTime, dispatch_get_main_queue(), ^(void) {
+                    currentlyPlaying = NO;
+                    NSLog(@"currently playing? %d", currentlyPlaying);
+                    highestValue = 0;
+                });
+            }
         }
         
     }];
@@ -86,6 +82,10 @@
         }
     }
     return NO;
+}
+
+- (IBAction)drum:(id)sender {
+    [sound play];
 }
 
 - (double)magnitude:(CMDeviceMotion*)motion {
