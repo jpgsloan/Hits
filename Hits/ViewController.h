@@ -13,10 +13,11 @@
 @interface ViewController : UIViewController {
     BOOL isVertical;
     BOOL exceededThreshold;
-    double highestValue;
     FISound *sound;
     BOOL shouldCancel;
     BOOL currentlyPlaying;
+    BOOL shouldGetCenterYaw;
+    double centerYaw;
     float *accelDataWindow;
 }
 
