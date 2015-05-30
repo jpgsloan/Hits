@@ -13,15 +13,16 @@
 @interface ViewController : UIViewController {
     BOOL isVertical;
     BOOL exceededThreshold;
-    NSMutableArray *accelDataWindow;
     double highestValue;
     FISound *sound;
     BOOL shouldCancel;
     BOOL currentlyPlaying;
+    float *accelDataWindow;
 }
 
 @property (strong, nonatomic) CMMotionManager *motionManager;
 @property (strong, nonatomic) NSOperationQueue *deviceUpdateQueue;
+@property (strong, nonatomic) NSMutableArray *dataWindow;
 
 @end
 
