@@ -18,6 +18,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    int __block logCounter = 0;
    
     NSError *error = nil;
     FISoundEngine *engine = [FISoundEngine sharedEngine];
@@ -26,14 +27,35 @@
     shouldCancel = YES;
     
     highestValue = 0;
+    BOOL __block stopped;
+    
+    accelDataWindow = malloc(sizeof(float)*4);
     
     self.motionManager = [[CMMotionManager alloc] init];
     self.deviceUpdateQueue = [NSOperationQueue new];
-    accelDataWindow = [NSMutableArray array];
+    _dataWindow = [NSMutableArray array];
     [self.motionManager setDeviceMotionUpdateInterval:.01];
     [self.motionManager startDeviceMotionUpdatesToQueue:self.deviceUpdateQueue withHandler:^(CMDeviceMotion *motion, NSError *error) {
         //NSLog(@"roll: %f, pitch: %f, yaw: %f", motion.attitude.roll, motion.attitude.pitch, motion.attitude.yaw);
         //NSLog(@"acceleration is: %f", sqrt(pow(motion.userAcceleration.x,2)+pow(motion.userAcceleration.y,2)+pow(motion.userAcceleration.z,2)));
+        
+        double normalizedMotion[3];
+        double mag = [self magnitude:motion];
+        normalizedMotion[0] = motion.userAcceleration.x / mag;
+        normalizedMotion[1] = motion.userAcceleration.y / mag;
+        normalizedMotion[2] = motion.userAcceleration.z / mag;
+        //NSLog(@"yaw: %f, pitch: %f, roll: %f", motion.attitude.yaw, motion.attitude.pitch, motion.attitude.roll);
+        
+        if (mag > 2.5) {
+            
+            //NSLog(@"vector: x: %f, y: %f, z: %f", normalizedMotion[0], normalizedMotion[1], normalizedMotion[2]);
+            stopped = NO;
+        } else if (!stopped) {
+            //NSLog(@"stopped");
+            NSLog(@"pitch: %f, yaw: %f", motion.attitude.pitch, motion.attitude.yaw);
+            stopped = YES;
+        }
+        
         if (fabs(motion.attitude.roll) > 0.75 && fabs(motion.attitude.roll) < 2.4) {
             //NSLog(@"vertical");
             isVertical = YES;
@@ -43,26 +65,13 @@
         }
         
         
-        double mag = [self magnitude:motion];
-        NSLog(@"mag: %f", mag);
-        NSLog(@"currently playing? %d", currentlyPlaying);
-        if (mag > 2.5 && !currentlyPlaying) {
-            if (highestValue < mag) {
-                highestValue = mag;
-            } else {
-                currentlyPlaying = YES;
-                NSLog(@"playing sound %d", currentlyPlaying);
-                [sound play];
-                NSLog(@"duraion: %f", sound.duration);
-                dispatch_time_t playTime = dispatch_time(DISPATCH_TIME_NOW, sound.duration * NSEC_PER_SEC);
-                dispatch_after(playTime, dispatch_get_main_queue(), ^(void) {
-                    currentlyPlaying = NO;
-                    NSLog(@"currently playing? %d", currentlyPlaying);
-                    highestValue = 0;
-                });
-            }
-        }
+        accelDataWindow[3] = accelDataWindow[2];
+        accelDataWindow[2] = accelDataWindow[1];
+        accelDataWindow[1] = accelDataWindow[0];
+        accelDataWindow[0] = mag;
+        //NSLog(@"jerk: %f", accelDataWindow[0] - accelDataWindow[3]/4);
         
+        logCounter++;
     }];
     
 }
@@ -73,16 +82,6 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (BOOL)didHit {
-    if ([accelDataWindow count] > 1) {
-        if ([self magnitude:[accelDataWindow lastObject]] < 4) {
-            //[accelDataWindow removeAllObjects];
-            exceededThreshold = NO;
-            return YES;
-        }
-    }
-    return NO;
-}
 
 - (IBAction)drum:(id)sender {
     [sound play];
