@@ -16,137 +16,172 @@
 
 @implementation ViewController
 
+/*
+
+- (CMAcceleration)userAccelerationInWorldRefFrame:(CMAcceleration)acc {
+{
+    CMRotationMatrix rot = frame.rotationMatrix;
+    
+    CMAcceleration accRef;
+    accRef.x = acc.x*rot.m11 + acc.y*rot.m12 + acc.z*rot.m13;
+    accRef.y = acc.x*rot.m21 + acc.y*rot.m22 + acc.z*rot.m23;
+    accRef.z = acc.x*rot.m31 + acc.y*rot.m32 + acc.z*rot.m33;
+    
+    return accRef;
+}
+ */
+
+- (IBAction)buttonPushed:(id)sender {
+    referenceFrame = lastFrame;
+}
+
+- (double)angleBetweenV1:(CMAcceleration)v1 andV2:(CMAcceleration)v2 {
+    CMAcceleration cross;
+    cross.x = v1.y*v2.z - v1.z*v2.y;
+    cross.y = v1.z*v2.x - v1.x*v2.z;
+    cross.z = v1.x*v2.y - v1.y*v2.x;
+    double crossMag = [self magnitude:cross];
+    double dot = v1.x*v2.x + v1.y*v2.y + v1.z*v2.z;
+    return atan2(crossMag, dot);
+}
+
+- (CMAcceleration)correctedAcceleration:(CMAcceleration)acc forCurrentAttitude:(CMAttitude*)attitude {
+    CMRotationMatrix rot = attitude.rotationMatrix;
+    CMAcceleration correctedAcc;
+    correctedAcc.x = acc.x*rot.m11 + acc.y*rot.m21 + acc.z*rot.m31;
+    correctedAcc.y = acc.x*rot.m12 + acc.y*rot.m22 + acc.z*rot.m32;
+    correctedAcc.z = acc.x*rot.m13 + acc.y*rot.m23 + acc.z*rot.m33;
+    return correctedAcc;
+}
+
+- (double)magnitude:(CMAcceleration)acceleration {
+    return sqrt(pow(acceleration.x,2)+pow(acceleration.y,2)+pow(acceleration.z, 2));
+}
+
+- (double)averageXValues {
+    double total = 0;
+    for (NSNumber *x in xValuesArray) {
+        total += x.doubleValue;
+    }
+    NSLog(@"count: %lu", (unsigned long)xValuesArray.count);
+    return total/xValuesArray.count;
+}
+
+- (void)logAcceleation:(CMAcceleration)acceleration {
+    NSLog(@"x: %f, y: %f, z: %f", acceleration.x, acceleration.y, acceleration.z);
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
    
     NSError *error = nil;
     FISoundEngine *engine = [FISoundEngine sharedEngine];
-    sound = [engine soundNamed:@"SD0010.wav" maxPolyphony:4 error:&error];
-    currentlyPlaying = NO;
-    shouldCancel = YES;
-    BOOL __block stopped;
-    accelDataWindow = malloc(sizeof(float)*4);
-    for (int i = 0; i < 4; i++) {
-        accelDataWindow[i] = 0.0;
+    snare = [engine soundNamed:@"snare.mp3" maxPolyphony:4 error:&error];
+    if (!snare) {
+        NSLog(@"Failed to load sound: %@", error);
     }
+    hihat = [engine soundNamed:@"hihat.wav" maxPolyphony:4 error:&error];
+    if (!hihat) {
+        NSLog(@"Failed to load sound: %@", error);
+    }
+    ride = [engine soundNamed:@"ride1.wav" maxPolyphony:4 error:&error];
+    if (!ride) {
+        NSLog(@"Failed to load sound: %@", error);
+    }
+    tom = [engine soundNamed:@"tom.wav" maxPolyphony:4 error:&error];
+    if (!tom) {
+        NSLog(@"Failed to load sound: %@", error);
+    }
+    crash = [engine soundNamed:@"crash.mp3" maxPolyphony:4 error:&error];
+    if (!crash) {
+        NSLog(@"Failed to load sound: %@", error);
+    }
+    kick = [engine soundNamed:@"siren.mp3" maxPolyphony:4 error:&error];
+    if (!kick) {
+        NSLog(@"Failed to load sound: %@", error);
+    }
+    
+    
+    xValuesArray = [NSMutableArray array];
     
     self.motionManager = [[CMMotionManager alloc] init];
     self.deviceUpdateQueue = [NSOperationQueue new];
     _dataWindow = [NSMutableArray array];
     [self.motionManager setDeviceMotionUpdateInterval:.01];
-    [self.motionManager startDeviceMotionUpdatesToQueue:self.deviceUpdateQueue withHandler:^(CMDeviceMotion *motion, NSError *error) {
-        //NSLog(@"roll: %f, pitch: %f, yaw: %f", motion.attitude.roll, motion.attitude.pitch, motion.attitude.yaw);
-        //NSLog(@"acceleration is: %f", sqrt(pow(motion.userAcceleration.x,2)+pow(motion.userAcceleration.y,2)+pow(motion.userAcceleration.z,2)));
-        
-        if (shouldGetCenterYaw) {
-            centerYaw = motion.attitude.yaw;
+    [self.motionManager startDeviceMotionUpdatesUsingReferenceFrame:CMAttitudeReferenceFrameXArbitraryZVertical toQueue:self.deviceUpdateQueue withHandler:^(CMDeviceMotion *motion, NSError *error) {
+        lastFrame = motion.attitude;
+        CMAttitude *attitude = motion.attitude;
+        if (referenceFrame) {
+            [attitude multiplyByInverseOfAttitude:referenceFrame];
+        }
+        CMAcceleration acceleration = [self correctedAcceleration:motion.userAcceleration forCurrentAttitude:attitude];
+        double magnitude = [self magnitude:acceleration];
+        if (magnitude < 1.2) {
+            lowMagCounter++;
+            if (lowMagCounter >= 6) {
+                didAccelerate = NO;
+            }
         }
         
-        double mag = [self magnitude:motion];
-        double normalizedMotion[3];
-        normalizedMotion[0] = motion.userAcceleration.x / mag;
-        normalizedMotion[1] = motion.userAcceleration.y / mag;
-        normalizedMotion[2] = motion.userAcceleration.z / mag;
-        float jerk = (accelDataWindow[0] - accelDataWindow[3])/4;
-        
-        if (jerk > 0.7) {
-            //NSLog(@"vector: x: %f, y: %f, z: %f", normalizedMotion[0], normalizedMotion[1], normalizedMotion[2]);
-            stopped = NO;
-        } else if (!stopped) {
-            //NSLog(@"stopped");
-            NSLog(@"pitch: %f, yaw: %f", motion.attitude.pitch, motion.attitude.yaw);
-            stopped = YES;
-            [self playInstrumentWithPitch:motion.attitude.pitch andYaw:motion.attitude.yaw];
+        if (magnitude > 2.0 && acceleration.z > 0) {
+            NSLog(@"accx: %f", acceleration.x);
+            if (xValuesArray.count == 0) {
+                [xValuesArray addObject:[NSNumber numberWithDouble:acceleration.x]];
+            } else if (!stopUpdatingXValues) {
+                if ([[xValuesArray lastObject] doubleValue] * acceleration.x > 0) {
+                    [xValuesArray addObject:@(acceleration.x)];
+                } else {
+                    stopUpdatingXValues = YES;
+                }
+            }
+            if (lastAcceleration.z == 0) {
+                lastAcceleration = acceleration;
+            }
+            didAccelerate = YES;
+            lowMagCounter = 0;
+        } else if (didAccelerate && magnitude > 2.2) {
+            didAccelerate = NO;
+            double angleInDegrees = [self angleBetweenV1:acceleration andV2:lastAcceleration] * 180/M_PI;
+            if (angleInDegrees > 80) {
+                double averageX = [self averageXValues];
+                [xValuesArray removeAllObjects];
+                NSLog(@"averageX: %f", averageX);
+                
+                if (attitude.pitch > .65) {
+                    if (averageX < -1.1) {
+                        NSLog(@"upper right");
+                        [ride play];
+                    } else if (averageX > 0.1) {
+                        NSLog(@"upper left");
+                        [crash play];
+                    } else {
+                        NSLog(@"upper center");
+                        [kick play];
+                    }
+                } else {
+                    if (averageX < -0.9) {
+                        NSLog(@"lower right");
+                        [tom play];
+                    } else if (averageX > 0.1) {
+                        NSLog(@"lower left");
+                        [hihat play];
+                    } else {
+                        NSLog(@"lower center");
+                        [snare play];
+                    }
+                }
+                
+                
+            }
+            lastAcceleration.z = 0;
         }
-        
-        if (fabs(motion.attitude.roll) > 0.75 && fabs(motion.attitude.roll) < 2.4) {
-            //NSLog(@"vertical");
-            isVertical = YES;
-        } else {
-            //NSLog(@"flat");
-            isVertical = NO;
-        }
-        
-        accelDataWindow[3] = accelDataWindow[2];
-        accelDataWindow[2] = accelDataWindow[1];
-        accelDataWindow[1] = accelDataWindow[0];
-        accelDataWindow[0] = mag;
-        //NSLog(@"jerk: %f", (accelDataWindow[0] - accelDataWindow[3])/4);
-        }];
-    
+    }];
 }
 
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
-}
-
-- (double)magnitude:(CMDeviceMotion*)motion {
-    return sqrt(pow(motion.userAcceleration.x,2)+pow(motion.userAcceleration.y,2)+pow(motion.userAcceleration.z,2));
-}
-
-- (void)playInstrumentWithPitch:(double)pitch andYaw:(double)yaw {
-    AVAudioSession *audioSession = [AVAudioSession sharedInstance];
-    NSError *err = nil;
-    [audioSession setCategory: AVAudioSessionCategoryPlayback  error:&err];
-    AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
-    
-    if (pitch < 0.7) {
-        float distanceFromCenter = fabs(centerYaw - yaw);
-        if (distanceFromCenter < 0.3) {
-            //play sound lower center
-            NSLog(@"Played lower center");
-            if (!sound) {
-                //NSLog(@"Failed to load sound: %@", error);
-            } else {
-                [sound play];
-            }
-        } else if (centerYaw - yaw < 0.0) {
-            NSLog(@"Played lower left");
-            //play sound lower left
-            if (!sound) {
-                //NSLog(@"Failed to load sound: %@", error);
-            } else {
-                [sound play];
-            }
-        } else if (centerYaw - yaw > 0.0) {
-            NSLog(@"Played lower right");
-            //play sound lower right
-            if (!sound) {
-                //NSLog(@"Failed to load sound: %@", error);
-            } else {
-                [sound play];
-            }
-        }
-    } else {
-        float distanceFromCenter = fabs(centerYaw - yaw);
-        if (distanceFromCenter < 0.3) {
-            NSLog(@"Played upper center");
-            //play sound upper center
-            if (!sound) {
-                //NSLog(@"Failed to load sound: %@", error);
-            } else {
-                [sound play];
-            }
-        } else if (centerYaw - yaw < 0.0) {
-            NSLog(@"Played upper left");
-            //play sound upper left
-            if (!sound) {
-                //NSLog(@"Failed to load sound: %@", error);
-            } else {
-                [sound play];
-            }
-        } else if (centerYaw - yaw > 0.0) {
-            NSLog(@"Played upper right");
-            //play sound upper right
-            if (!sound) {
-                //NSLog(@"Failed to load sound: %@", error);
-            } else {
-                [sound play];
-            }
-        }
-    }
 }
 
 @end

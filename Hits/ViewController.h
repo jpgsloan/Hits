@@ -11,14 +11,19 @@
 #import <AVFoundation/AVFoundation.h>
 #import <FISoundEngine.h>
 @interface ViewController : UIViewController {
-    BOOL isVertical;
-    BOOL exceededThreshold;
-    FISound *sound;
-    BOOL shouldCancel;
-    BOOL currentlyPlaying;
-    BOOL shouldGetCenterYaw;
-    double centerYaw;
-    float *accelDataWindow;
+    FISound *snare;
+    FISound *hihat;
+    FISound *ride;
+    FISound *tom;
+    FISound *kick;
+    FISound *crash;
+    int lowMagCounter;
+    BOOL didAccelerate;
+    CMAttitude *referenceFrame;
+    CMAttitude *lastFrame;
+    CMAcceleration lastAcceleration;
+    NSMutableArray *xValuesArray;
+    BOOL stopUpdatingXValues;
 }
 
 @property (strong, nonatomic) CMMotionManager *motionManager;
