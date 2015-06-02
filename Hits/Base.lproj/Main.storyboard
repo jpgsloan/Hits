@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6211" systemVersion="14A298i" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6254" systemVersion="14B25" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6204"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModuleProvider="" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="ViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
@@ -15,11 +16,49 @@
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fxl-PD-6Wu">
+                                <rect key="frame" x="142" y="92" width="62" height="30"/>
+                                <state key="normal" title="Calibrate">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="calibrate:" destination="BYZ-38-t0r" eventType="touchUpInside" id="FAv-dD-3AD"/>
+                                </connections>
+                            </button>
+                            <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kK8-NJ-vYS" customClass="PlayView">
+                                <rect key="frame" x="0.0" y="523" width="600" height="77"/>
+                                <color key="backgroundColor" red="0.8553596368715084" green="0.23435750273721453" blue="0.31883879020288353" alpha="1" colorSpace="calibratedRGB"/>
+                            </view>
+                            <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mlO-6y-Dxu">
+                                <rect key="frame" x="0.0" y="20" width="600" height="44"/>
+                                <items>
+                                    <navigationItem title="Arrange" id="wFf-G3-YqG">
+                                        <barButtonItem key="leftBarButtonItem" title="Settings" id="iBH-4e-Fgd"/>
+                                        <barButtonItem key="rightBarButtonItem" title="Packs" id="CKZ-F0-xPm"/>
+                                    </navigationItem>
+                                </items>
+                            </navigationBar>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="fxl-PD-6Wu" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="126" id="4xT-sr-if8"/>
+                            <constraint firstItem="kK8-NJ-vYS" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-16" id="8b6-XI-irJ"/>
+                            <constraint firstItem="mlO-6y-Dxu" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-16" id="LFb-I3-uqX"/>
+                            <constraint firstItem="fxl-PD-6Wu" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="72" id="dme-Hc-o9v"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="kK8-NJ-vYS" secondAttribute="trailing" constant="-16" id="rgx-ml-GGo"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="kK8-NJ-vYS" secondAttribute="bottom" id="riT-4h-dJE"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="mlO-6y-Dxu" secondAttribute="trailing" constant="-16" id="vRr-rW-cch"/>
+                            <constraint firstItem="mlO-6y-Dxu" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="zHJ-GW-Teq"/>
+                        </constraints>
                     </view>
+                    <connections>
+                        <outlet property="playView" destination="kK8-NJ-vYS" id="UYN-vf-efs"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="134" y="192"/>
         </scene>
     </scenes>
 </document>

@@ -10,20 +10,14 @@
 #import <CoreMotion/CoreMotion.h>
 #import <AVFoundation/AVFoundation.h>
 #import <FISoundEngine.h>
+
 @interface ViewController : UIViewController {
-    BOOL isVertical;
-    BOOL exceededThreshold;
-    FISound *sound;
-    BOOL shouldCancel;
-    BOOL currentlyPlaying;
-    BOOL shouldGetCenterYaw;
-    double centerYaw;
-    float *accelDataWindow;
 }
 
 @property (strong, nonatomic) CMMotionManager *motionManager;
 @property (strong, nonatomic) NSOperationQueue *deviceUpdateQueue;
 @property (strong, nonatomic) NSMutableArray *dataWindow;
+@property (strong, nonatomic) NSMutableArray *sounds;
 
 @end
 
