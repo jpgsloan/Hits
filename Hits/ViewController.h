@@ -12,6 +12,19 @@
 #import <FISoundEngine.h>
 
 @interface ViewController : UIViewController {
+    FISound *snare;
+    FISound *hihat;
+    FISound *ride;
+    FISound *tom;
+    FISound *kick;
+    FISound *crash;
+    int lowMagCounter;
+    BOOL didAccelerate;
+    CMAttitude *referenceFrame;
+    CMAttitude *lastFrame;
+    CMAcceleration lastAcceleration;
+    NSMutableArray *xValuesArray;
+    BOOL stopUpdatingXValues;
 }
 
 @property (strong, nonatomic) CMMotionManager *motionManager;
