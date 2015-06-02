@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6254" systemVersion="14B25" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="00a-wj-Z8P">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="b0W-gl-5rY">
+            <objects>
+                <viewController id="00a-wj-Z8P" customClass="ViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="niN-iM-UM2"/>
+                        <viewControllerLayoutGuide type="bottom" id="9lS-sw-Rm1"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="OXH-a8-1ry">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ygQ-Kz-uzj" customClass="PlayView">
+                                <rect key="frame" x="0.0" y="529" width="600" height="71"/>
+                                <color key="backgroundColor" red="0.90697014664804465" green="0.27693981530294937" blue="0.35332600482970583" alpha="1" colorSpace="calibratedRGB"/>
+                            </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Goq-mp-ZJC">
+                                <rect key="frame" x="122" y="107" width="62" height="30"/>
+                                <state key="normal" title="Calibrate">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="buttonPushed:" destination="00a-wj-Z8P" eventType="touchUpInside" id="IX3-Vm-vbX"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="ygQ-Kz-uzj" firstAttribute="leading" secondItem="OXH-a8-1ry" secondAttribute="leadingMargin" constant="-16" id="DQO-9V-uwF"/>
+                            <constraint firstItem="Goq-mp-ZJC" firstAttribute="top" secondItem="niN-iM-UM2" secondAttribute="bottom" constant="87" id="bM9-vi-WVc"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="ygQ-Kz-uzj" secondAttribute="trailing" constant="-16" id="dyI-A6-ci8"/>
+                            <constraint firstItem="9lS-sw-Rm1" firstAttribute="top" secondItem="ygQ-Kz-uzj" secondAttribute="bottom" id="g8a-mI-S0e"/>
+                            <constraint firstItem="Goq-mp-ZJC" firstAttribute="leading" secondItem="OXH-a8-1ry" secondAttribute="leadingMargin" constant="106" id="ui4-ct-oxZ"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="playView" destination="ygQ-Kz-uzj" id="cml-7S-CGg"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="v1j-yg-RA1" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="310" y="234"/>
+        </scene>
+    </scenes>
+</document>

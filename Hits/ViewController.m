@@ -106,8 +106,9 @@
     accelDataWindow = malloc(sizeof(float)*4);
     for (int i = 0; i < 4; i++) {
         accelDataWindow[i] = 0.0;
-
-    snare = [engine soundNamed:@"snare.mp3" maxPolyphony:4 error:&error];
+    }
+    /*
+    snare = [engine soundNamed:@"SD0010.wav" maxPolyphony:4 error:&error];
     if (!snare) {
         NSLog(@"Failed to load sound: %@", error);
     }
@@ -131,7 +132,7 @@
     if (!kick) {
         NSLog(@"Failed to load sound: %@", error);
     }
-    
+    */
     
     xValuesArray = [NSMutableArray array];
     
@@ -140,6 +141,9 @@
     _dataWindow = [NSMutableArray array];
     [self.motionManager setDeviceMotionUpdateInterval:.01];
     [self.motionManager startDeviceMotionUpdatesUsingReferenceFrame:CMAttitudeReferenceFrameXArbitraryZVertical toQueue:self.deviceUpdateQueue withHandler:^(CMDeviceMotion *motion, NSError *error) {
+        
+        [self updatePlayViewWithPitch:motion.attitude.pitch andYaw:motion.attitude.yaw];
+        
         lastFrame = motion.attitude;
         CMAttitude *attitude = motion.attitude;
         if (referenceFrame) {
@@ -181,24 +185,24 @@
                 if (attitude.pitch > .65) {
                     if (averageX < -1.1) {
                         NSLog(@"upper right");
-                        [ride play];
+                        [((SoundObject *)_sounds[0]).sound play];
                     } else if (averageX > 0.1) {
                         NSLog(@"upper left");
-                        [crash play];
+                        [((SoundObject *)_sounds[0]).sound play];
                     } else {
                         NSLog(@"upper center");
-                        [kick play];
+                        [((SoundObject *)_sounds[0]).sound play];
                     }
                 } else {
                     if (averageX < -0.9) {
                         NSLog(@"lower right");
-                        [tom play];
+                        [((SoundObject *)_sounds[0]).sound play];
                     } else if (averageX > 0.1) {
                         NSLog(@"lower left");
-                        [hihat play];
+                        [((SoundObject *)_sounds[0]).sound play];
                     } else {
                         NSLog(@"lower center");
-                        [snare play];
+                        [((SoundObject *)_sounds[0]).sound play];
                     }
                 }
                 
@@ -209,17 +213,9 @@
     }];
 }
 
-- (IBAction)calibrate:(UIButton *)sender {
-    shouldGetCenterYaw = YES;
-}
-
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
-}
-
-- (double)magnitude:(CMDeviceMotion*)motion {
-    return sqrt(pow(motion.userAcceleration.x,2)+pow(motion.userAcceleration.y,2)+pow(motion.userAcceleration.z,2));
 }
 
 - (void)updatePlayViewWithPitch:(double)pitch andYaw:(double)yaw {
