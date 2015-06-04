@@ -77,28 +77,28 @@
     currentPosition = 0;
     NSError *error = nil;
     FISoundEngine *engine = [FISoundEngine sharedEngine];
-    snare = [engine soundNamed:@"snare.mp3" maxPolyphony:4 error:&error];
-    if (!snare) {
-        NSLog(@"Failed to load sound: %@", error);
-    }
-    hihat = [engine soundNamed:@"hihat.wav" maxPolyphony:4 error:&error];
+    hihat = [engine soundNamed:@"hihat22.wav" maxPolyphony:4 error:&error];
     if (!hihat) {
         NSLog(@"Failed to load sound: %@", error);
     }
-    ride = [engine soundNamed:@"ride1.wav" maxPolyphony:4 error:&error];
-    if (!ride) {
+    kick = [engine soundNamed:@"kick2.wav" maxPolyphony:4 error:&error];
+    if (!kick) {
         NSLog(@"Failed to load sound: %@", error);
     }
-    tom = [engine soundNamed:@"tom.wav" maxPolyphony:4 error:&error];
-    if (!tom) {
+    snare = [engine soundNamed:@"SD0010.wav" maxPolyphony:4 error:&error];
+    if (!snare) {
         NSLog(@"Failed to load sound: %@", error);
     }
-    crash = [engine soundNamed:@"crash.mp3" maxPolyphony:4 error:&error];
+    crash = [engine soundNamed:@"openhat2.wav" maxPolyphony:4 error:&error];
     if (!crash) {
         NSLog(@"Failed to load sound: %@", error);
     }
-    kick = [engine soundNamed:@"siren.mp3" maxPolyphony:4 error:&error];
-    if (!kick) {
+    tom = [engine soundNamed:@"perc1.wav" maxPolyphony:4 error:&error];
+    if (!tom) {
+        NSLog(@"Failed to load sound: %@", error);
+    }
+    tom2 = [engine soundNamed:@"perc2.wav" maxPolyphony:4 error:&error];
+    if (!tom2) {
         NSLog(@"Failed to load sound: %@", error);
     }
     
@@ -140,18 +140,24 @@
                 if (attitude.pitch > .65) {
                     if (attitude.yaw < -.8) {
                         NSLog(@"upper right");
+                        [tom2 play];
                     } else if (attitude.yaw > .6) {
                         NSLog(@"upper left");
+                        [crash play];
                     } else {
                         NSLog(@"upper center");
+                        [tom play];
                     }
                 } else {
                     if (attitude.yaw < -.8) {
                         NSLog(@"lower right");
+                        [kick play];
                     } else if (attitude.yaw > .6) {
                         NSLog(@"lower left");
+                        [hihat play];
                     } else {
                         NSLog(@"lower center");
+                        [snare play];
                     }
                 }
             }

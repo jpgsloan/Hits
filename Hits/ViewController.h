@@ -14,7 +14,7 @@
 @interface ViewController : UIViewController {
     FISound *snare;
     FISound *hihat;
-    FISound *ride;
+    FISound *tom2;
     FISound *tom;
     FISound *kick;
     FISound *crash;
