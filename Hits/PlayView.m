@@ -47,7 +47,6 @@
 {
     //Takse SoundObject as input that contains icon and color. Then updates playview accordingly to show the sound.
     if (self.backgroundColor != sound.color) {
-        NSLog(@"updating playview");
         self.backgroundColor = sound.color;
     }
 }

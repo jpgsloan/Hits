@@ -32,5 +32,13 @@
 @property (strong, nonatomic) NSMutableArray *dataWindow;
 @property (strong, nonatomic) NSMutableArray *sounds;
 
+@property (weak, nonatomic) IBOutlet UIView *topLeftPad;
+@property (weak, nonatomic) IBOutlet UIView *topCenterPad;
+@property (weak, nonatomic) IBOutlet UIView *topRightPad;
+@property (weak, nonatomic) IBOutlet UIView *bottomLeftPad;
+@property (weak, nonatomic) IBOutlet UIView *bottomCenterPad;
+@property (weak, nonatomic) IBOutlet UIView *bottomRightPad;
+@property (strong, nonatomic) NSArray *drumPads;
+
 @end
 

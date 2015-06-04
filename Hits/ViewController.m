@@ -86,13 +86,15 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    NSArray *colors = @[[UIColor redColor],[UIColor blueColor],[UIColor yellowColor],[UIColor greenColor],[UIColor purpleColor],[UIColor orangeColor]];
+    NSArray *colors = @[[[UIColor redColor] colorWithAlphaComponent:0.5],[[UIColor blueColor] colorWithAlphaComponent:0.5],[[UIColor yellowColor] colorWithAlphaComponent:0.5],[[UIColor greenColor] colorWithAlphaComponent:0.5],[[UIColor purpleColor] colorWithAlphaComponent:0.5],[[UIColor orangeColor] colorWithAlphaComponent:0.5]];
+    _drumPads = @[_topLeftPad,_topCenterPad,_topRightPad,_bottomLeftPad,_bottomCenterPad,_bottomRightPad];
     
     _sounds = [NSMutableArray array];
     NSError *error = nil;
     FISoundEngine *engine = [FISoundEngine sharedEngine];
 
     for (int i = 0; i < 6; i++) {
+        ((UIView *)_drumPads[i]).backgroundColor = colors[i];
         SoundObject *soundObj = [[SoundObject alloc] init];
         soundObj.color = colors[i];
         soundObj.sound = [engine soundNamed:@"SD0010.wav" maxPolyphony:4 error:&error];
@@ -219,22 +221,37 @@
 }
 
 - (void)updatePlayViewWithPitch:(double)pitch andYaw:(double)yaw {
-    if (pitch < 0.7) {
+    for (int i = 0; i < 6; i++) {
+        ((UIView *)_drumPads[i]).layer.borderWidth = 0;
+    }
+    if (pitch > 0.7) {
         float distanceFromCenter = fabs(centerYaw - yaw);
         if (distanceFromCenter < 0.3) {
+            _topCenterPad.layer.borderWidth = 3;
+            _topCenterPad.layer.borderColor = [[UIColor blackColor] CGColor];
             [_playView updateWithCurSoundObject:_sounds[1]];
         } else if (centerYaw - yaw < 0.0) {
+            _topLeftPad.layer.borderWidth = 3;
+            _topLeftPad.layer.borderColor = [[UIColor blackColor] CGColor];
             [_playView updateWithCurSoundObject:_sounds[0]];
         } else if (centerYaw - yaw > 0.0) {
+            _topRightPad.layer.borderWidth = 3;
+            _topRightPad.layer.borderColor = [[UIColor blackColor] CGColor];
             [_playView updateWithCurSoundObject:_sounds[2]];
         }
     } else {
         float distanceFromCenter = fabs(centerYaw - yaw);
         if (distanceFromCenter < 0.3) {
+            _bottomCenterPad.layer.borderWidth = 3;
+            _bottomCenterPad.layer.borderColor = [[UIColor blackColor] CGColor];
             [_playView updateWithCurSoundObject:_sounds[4]];
         } else if (centerYaw - yaw < 0.0) {
+            _bottomLeftPad.layer.borderWidth = 3;
+            _bottomLeftPad.layer.borderColor = [[UIColor blackColor] CGColor];
             [_playView updateWithCurSoundObject:_sounds[3]];
         } else if (centerYaw - yaw > 0.0) {
+            _bottomRightPad.layer.borderWidth = 3;
+            _bottomRightPad.layer.borderColor = [[UIColor blackColor] CGColor];
             [_playView updateWithCurSoundObject:_sounds[5]];
         }
     }
