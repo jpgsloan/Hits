@@ -109,7 +109,7 @@
     self.deviceUpdateQueue = [NSOperationQueue new];
     _dataWindow = [NSMutableArray array];
     [self.motionManager setDeviceMotionUpdateInterval:.01];
-    [self.motionManager startDeviceMotionUpdatesUsingReferenceFrame:CMAttitudeReferenceFrameXArbitraryZVertical toQueue:self.deviceUpdateQueue withHandler:^(CMDeviceMotion *motion, NSError *error) {
+    [self.motionManager startDeviceMotionUpdatesUsingReferenceFrame:CMAttitudeReferenceFrameXArbitraryCorrectedZVertical toQueue:self.deviceUpdateQueue withHandler:^(CMDeviceMotion *motion, NSError *error) {
         lastFrame = motion.attitude;
         CMAttitude *attitude = motion.attitude;
         if (referenceFrame) {
@@ -136,12 +136,16 @@
             if (angleInDegrees > 80) {
                 
                 NSLog(@"yaw: %f", attitude.yaw);
+                NSLog(@"pitch: %f", attitude.pitch);
+                //NSLog(@"magnet: %f", motion.magneticField)
                 
-                if (attitude.pitch > .65) {
+                CMCalibratedMagneticField
+                
+                if (attitude.pitch > .50) {
                     if (attitude.yaw < -.8) {
                         NSLog(@"upper right");
                         [tom2 play];
-                    } else if (attitude.yaw > .6) {
+                    } else if (attitude.yaw > .45) {
                         NSLog(@"upper left");
                         [crash play];
                     } else {
@@ -152,7 +156,7 @@
                     if (attitude.yaw < -.8) {
                         NSLog(@"lower right");
                         [kick play];
-                    } else if (attitude.yaw > .6) {
+                    } else if (attitude.yaw > .45) {
                         NSLog(@"lower left");
                         [hihat play];
                     } else {
