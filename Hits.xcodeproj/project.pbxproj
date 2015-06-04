@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		110D36BB1B20ECCE0050AE51 /* hihat22.wav in Resources */ = {isa = PBXBuildFile; fileRef = 110D36B51B20ECCE0050AE51 /* hihat22.wav */; };
+		110D36BC1B20ECCE0050AE51 /* kick2.wav in Resources */ = {isa = PBXBuildFile; fileRef = 110D36B61B20ECCE0050AE51 /* kick2.wav */; };
+		110D36BD1B20ECCE0050AE51 /* PlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = 110D36B81B20ECCE0050AE51 /* PlayView.m */; };
+		110D36BE1B20ECCE0050AE51 /* SoundObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 110D36BA1B20ECCE0050AE51 /* SoundObject.m */; };
 		116B0BB11B0291000002EEE8 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 116B0BB01B0291000002EEE8 /* main.m */; };
 		116B0BB41B0291000002EEE8 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 116B0BB31B0291000002EEE8 /* AppDelegate.m */; };
 		116B0BB71B0291000002EEE8 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 116B0BB61B0291000002EEE8 /* ViewController.m */; };
@@ -29,6 +33,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		110D36B51B20ECCE0050AE51 /* hihat22.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = hihat22.wav; sourceTree = "<group>"; };
+		110D36B61B20ECCE0050AE51 /* kick2.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = kick2.wav; sourceTree = "<group>"; };
+		110D36B71B20ECCE0050AE51 /* PlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayView.h; sourceTree = "<group>"; };
+		110D36B81B20ECCE0050AE51 /* PlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayView.m; sourceTree = "<group>"; };
+		110D36B91B20ECCE0050AE51 /* SoundObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SoundObject.h; sourceTree = "<group>"; };
+		110D36BA1B20ECCE0050AE51 /* SoundObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SoundObject.m; sourceTree = "<group>"; };
 		116B0BAB1B0291000002EEE8 /* Hits.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Hits.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		116B0BAF1B0291000002EEE8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		116B0BB01B0291000002EEE8 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -90,6 +100,10 @@
 		116B0BAD1B0291000002EEE8 /* Hits */ = {
 			isa = PBXGroup;
 			children = (
+				110D36B71B20ECCE0050AE51 /* PlayView.h */,
+				110D36B81B20ECCE0050AE51 /* PlayView.m */,
+				110D36B91B20ECCE0050AE51 /* SoundObject.h */,
+				110D36BA1B20ECCE0050AE51 /* SoundObject.m */,
 				116B0BD61B02C3B50002EEE8 /* Sounds */,
 				116B0BB21B0291000002EEE8 /* AppDelegate.h */,
 				AD88AB6F1B20EBDC003E6480 /* Main.storyboard */,
@@ -132,6 +146,8 @@
 		116B0BD61B02C3B50002EEE8 /* Sounds */ = {
 			isa = PBXGroup;
 			children = (
+				110D36B51B20ECCE0050AE51 /* hihat22.wav */,
+				110D36B61B20ECCE0050AE51 /* kick2.wav */,
 				116B0BD71B02CBDF0002EEE8 /* SD0010.wav */,
 			);
 			name = Sounds;
@@ -238,6 +254,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				116B0BBF1B0291000002EEE8 /* LaunchScreen.xib in Resources */,
+				110D36BC1B20ECCE0050AE51 /* kick2.wav in Resources */,
+				110D36BB1B20ECCE0050AE51 /* hihat22.wav in Resources */,
 				116B0BD81B02CBDF0002EEE8 /* SD0010.wav in Resources */,
 				116B0BBC1B0291000002EEE8 /* Images.xcassets in Resources */,
 				AD88AB701B20EBDC003E6480 /* Main.storyboard in Resources */,
@@ -291,8 +309,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				110D36BE1B20ECCE0050AE51 /* SoundObject.m in Sources */,
 				116B0BB71B0291000002EEE8 /* ViewController.m in Sources */,
 				116B0BB41B0291000002EEE8 /* AppDelegate.m in Sources */,
+				110D36BD1B20ECCE0050AE51 /* PlayView.m in Sources */,
 				116B0BB11B0291000002EEE8 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
