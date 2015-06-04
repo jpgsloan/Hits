@@ -9,8 +9,21 @@
 #import "ViewController.h"
 #import "FISoundEngine.h"
 #import <AudioToolbox/AudioToolbox.h>
+#import "SoundObject.h"
+#import "PlayView.h"
 
-@interface ViewController ()
+@interface ViewController (){
+    BOOL isVertical;
+    BOOL exceededThreshold;
+    BOOL shouldCancel;
+    BOOL currentlyPlaying;
+    BOOL shouldGetCenterYaw;
+    double centerYaw;
+    float *accelDataWindow;
+}
+
+@property (weak, nonatomic) IBOutlet PlayView *playView;
+
 
 @end
 
@@ -72,19 +85,41 @@
 }
 
 - (void)viewDidLoad {
-    [super viewDidLoad];
-   
+    [super viewDidLoad];   
     currentPosition = 0;
+    NSArray *colors = @[[[UIColor redColor] colorWithAlphaComponent:0.5],[[UIColor blueColor] colorWithAlphaComponent:0.5],[[UIColor yellowColor] colorWithAlphaComponent:0.5],[[UIColor greenColor] colorWithAlphaComponent:0.5],[[UIColor purpleColor] colorWithAlphaComponent:0.5],[[UIColor orangeColor] colorWithAlphaComponent:0.5]];
+    _drumPads = @[_topLeftPad,_topCenterPad,_topRightPad,_bottomLeftPad,_bottomCenterPad,_bottomRightPad];
+    
+    _sounds = [NSMutableArray array];
     NSError *error = nil;
     FISoundEngine *engine = [FISoundEngine sharedEngine];
-    snare = [engine soundNamed:@"snare.mp3" maxPolyphony:4 error:&error];
-    if (!snare) {
+
+    for (int i = 0; i < 6; i++) {
+        ((UIView *)_drumPads[i]).backgroundColor = colors[i];
+        SoundObject *soundObj = [[SoundObject alloc] init];
+        soundObj.color = colors[i];
+        soundObj.sound = [engine soundNamed:@"SD0010.wav" maxPolyphony:4 error:&error];
+        [_sounds addObject:soundObj];
+    }
+    
+    currentlyPlaying = NO;
+    shouldCancel = YES;
+    shouldGetCenterYaw = YES;
+    BOOL __block stopped;
+    accelDataWindow = malloc(sizeof(float)*4);
+    for (int i = 0; i < 4; i++) {
+        accelDataWindow[i] = 0.0;
+    }
+    
+    kick = [engine soundNamed:@"kick2.wav" maxPolyphony:4 error:&error];
+    if (!kick) {
         NSLog(@"Failed to load sound: %@", error);
     }
-    hihat = [engine soundNamed:@"hihat.wav" maxPolyphony:4 error:&error];
+    hihat = [engine soundNamed:@"hihat22.wav" maxPolyphony:4 error:&error];
     if (!hihat) {
         NSLog(@"Failed to load sound: %@", error);
     }
+    /*
     ride = [engine soundNamed:@"ride1.wav" maxPolyphony:4 error:&error];
     if (!ride) {
         NSLog(@"Failed to load sound: %@", error);
@@ -101,15 +136,18 @@
     if (!kick) {
         NSLog(@"Failed to load sound: %@", error);
     }
-    
+    */
     
     xValuesArray = [NSMutableArray array];
     
     self.motionManager = [[CMMotionManager alloc] init];
-    self.deviceUpdateQueue = [NSOperationQueue new];
+    self.deviceUpdateQueue = [NSOperationQueue mainQueue];
     _dataWindow = [NSMutableArray array];
     [self.motionManager setDeviceMotionUpdateInterval:.01];
     [self.motionManager startDeviceMotionUpdatesUsingReferenceFrame:CMAttitudeReferenceFrameXArbitraryZVertical toQueue:self.deviceUpdateQueue withHandler:^(CMDeviceMotion *motion, NSError *error) {
+        
+        [self updatePlayViewWithPitch:motion.attitude.pitch andYaw:motion.attitude.yaw];
+        
         lastFrame = motion.attitude;
         CMAttitude *attitude = motion.attitude;
         if (referenceFrame) {
@@ -168,6 +206,24 @@
                         NSLog(@"upper left");
                     } else {
                         NSLog(@"upper center");
+                        [((SoundObject *)_sounds[0]).sound play];
+                    } else if (averageX > 0.1) {
+                        NSLog(@"upper left");
+                        [hihat play];
+                    } else {
+                        NSLog(@"upper center");
+                        [((SoundObject *)_sounds[0]).sound play];
+                    }
+                } else {
+                    if (averageX < -0.9) {
+                        NSLog(@"lower right");
+                        [((SoundObject *)_sounds[0]).sound play];
+                    } else if (averageX > 0.1) {
+                        NSLog(@"lower left");
+                        [((SoundObject *)_sounds[0]).sound play];
+                    } else {
+                        NSLog(@"lower center");
+                        [kick play];
                     }
                 }
             }
@@ -177,10 +233,115 @@
     }];
 }
 
-
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)updatePlayViewWithPitch:(double)pitch andYaw:(double)yaw {
+    for (int i = 0; i < 6; i++) {
+        ((UIView *)_drumPads[i]).layer.borderWidth = 0;
+    }
+    if (pitch > 0.7) {
+        float distanceFromCenter = fabs(centerYaw - yaw);
+        if (distanceFromCenter < 0.3) {
+            _topCenterPad.layer.borderWidth = 3;
+            _topCenterPad.layer.borderColor = [[UIColor blackColor] CGColor];
+            [_playView updateWithCurSoundObject:_sounds[1]];
+        } else if (centerYaw - yaw < 0.0) {
+            _topLeftPad.layer.borderWidth = 3;
+            _topLeftPad.layer.borderColor = [[UIColor blackColor] CGColor];
+            [_playView updateWithCurSoundObject:_sounds[0]];
+        } else if (centerYaw - yaw > 0.0) {
+            _topRightPad.layer.borderWidth = 3;
+            _topRightPad.layer.borderColor = [[UIColor blackColor] CGColor];
+            [_playView updateWithCurSoundObject:_sounds[2]];
+        }
+    } else {
+        float distanceFromCenter = fabs(centerYaw - yaw);
+        if (distanceFromCenter < 0.3) {
+            _bottomCenterPad.layer.borderWidth = 3;
+            _bottomCenterPad.layer.borderColor = [[UIColor blackColor] CGColor];
+            [_playView updateWithCurSoundObject:_sounds[4]];
+        } else if (centerYaw - yaw < 0.0) {
+            _bottomLeftPad.layer.borderWidth = 3;
+            _bottomLeftPad.layer.borderColor = [[UIColor blackColor] CGColor];
+            [_playView updateWithCurSoundObject:_sounds[3]];
+        } else if (centerYaw - yaw > 0.0) {
+            _bottomRightPad.layer.borderWidth = 3;
+            _bottomRightPad.layer.borderColor = [[UIColor blackColor] CGColor];
+            [_playView updateWithCurSoundObject:_sounds[5]];
+        }
+    }
+}
+
+- (void)playInstrumentWithPitch:(double)pitch andYaw:(double)yaw {
+    AVAudioSession *audioSession = [AVAudioSession sharedInstance];
+    NSError *err = nil;
+    [audioSession setCategory: AVAudioSessionCategoryPlayback  error:&err];
+    AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
+    
+    if (pitch < 0.7) {
+        float distanceFromCenter = fabs(centerYaw - yaw);
+        if (distanceFromCenter < 0.3) {
+            //play sound lower center
+            NSLog(@"Played lower center");
+            FISound *sound = ((SoundObject *) _sounds[0]).sound;
+            if (!sound) {
+                //NSLog(@"Failed to load sound: %@", error);
+            } else {
+                [sound play];
+            }
+        } else if (centerYaw - yaw < 0.0) {
+            NSLog(@"Played lower left");
+            //play sound lower left
+            FISound *sound = ((SoundObject *) _sounds[0]).sound;
+            if (!sound) {
+                //NSLog(@"Failed to load sound: %@", error);
+            } else {
+                [sound play];
+            }
+        } else if (centerYaw - yaw > 0.0) {
+            NSLog(@"Played lower right");
+            FISound *sound = ((SoundObject *) _sounds[0]).sound;
+            //play sound lower right
+            if (!sound) {
+                //NSLog(@"Failed to load sound: %@", error);
+            } else {
+                [sound play];
+            }
+        }
+    } else {
+        float distanceFromCenter = fabs(centerYaw - yaw);
+        if (distanceFromCenter < 0.3) {
+            NSLog(@"Played upper center");
+            //play sound upper center
+            FISound *sound = ((SoundObject *) _sounds[0]).sound;
+            if (!sound) {
+                //NSLog(@"Failed to load sound: %@", error);
+            } else {
+                [sound play];
+            }
+        } else if (centerYaw - yaw < 0.0) {
+            NSLog(@"Played upper left");
+            //play sound upper left
+            FISound *sound = ((SoundObject *) _sounds[0]).sound;
+            if (!sound) {
+                //NSLog(@"Failed to load sound: %@", error);
+            } else {
+                [sound play];
+            }
+        } else if (centerYaw - yaw > 0.0) {
+            NSLog(@"Played upper right");
+            //play sound upper right
+            FISound *sound = ((SoundObject *) _sounds[0]).sound;
+            if (!sound) {
+                //NSLog(@"Failed to load sound: %@", error);
+            } else {
+                [sound play];
+            }
+        }
+    }
 }
 
 @end
