@@ -125,16 +125,6 @@
         }
         
         if (magnitude > 2.0 && acceleration.z > 0) {
-            NSLog(@"accx: %f", acceleration.x);
-            if (xValuesArray.count == 0) {
-                [xValuesArray addObject:[NSNumber numberWithDouble:acceleration.x]];
-            } else if (!stopUpdatingXValues) {
-                if ([[xValuesArray lastObject] doubleValue] * acceleration.x > 0) {
-                    [xValuesArray addObject:@(acceleration.x)];
-                } else {
-                    stopUpdatingXValues = YES;
-                }
-            }
             if (lastAcceleration.z == 0) {
                 lastAcceleration = acceleration;
             }
@@ -144,30 +134,24 @@
             didAccelerate = NO;
             double angleInDegrees = [self angleBetweenV1:acceleration andV2:lastAcceleration] * 180/M_PI;
             if (angleInDegrees > 80) {
-                double averageX = [self averageXValues];
-                [xValuesArray removeAllObjects];
-                NSLog(@"averageX: %f", averageX);
-                if (averageX < -1.1) {
-                    currentPosition = MIN(1, currentPosition+1);
-                } else if (averageX > 0.1) {
-                    currentPosition = MAX(-1, currentPosition-1);
-                }
+                
+                NSLog(@"yaw: %f", attitude.yaw);
                 
                 if (attitude.pitch > .65) {
-                    if (currentPosition == 1) {
+                    if (attitude.yaw < -.8) {
                         NSLog(@"upper right");
-                    } else if (currentPosition == -1) {
+                    } else if (attitude.yaw > .6) {
                         NSLog(@"upper left");
                     } else {
                         NSLog(@"upper center");
                     }
                 } else {
-                    if (currentPosition == 1) {
-                        NSLog(@"upper right");
-                    } else if (currentPosition == -1) {
-                        NSLog(@"upper left");
+                    if (attitude.yaw < -.8) {
+                        NSLog(@"lower right");
+                    } else if (attitude.yaw > .6) {
+                        NSLog(@"lower left");
                     } else {
-                        NSLog(@"upper center");
+                        NSLog(@"lower center");
                     }
                 }
             }
