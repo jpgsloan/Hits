@@ -109,15 +109,16 @@
     for (int i = 0; i < 4; i++) {
         accelDataWindow[i] = 0.0;
     }
-    /*
-    snare = [engine soundNamed:@"SD0010.wav" maxPolyphony:4 error:&error];
-    if (!snare) {
+    
+    kick = [engine soundNamed:@"kick2.wav" maxPolyphony:4 error:&error];
+    if (!kick) {
         NSLog(@"Failed to load sound: %@", error);
     }
-    hihat = [engine soundNamed:@"hihat.wav" maxPolyphony:4 error:&error];
+    hihat = [engine soundNamed:@"hihat22.wav" maxPolyphony:4 error:&error];
     if (!hihat) {
         NSLog(@"Failed to load sound: %@", error);
     }
+    /*
     ride = [engine soundNamed:@"ride1.wav" maxPolyphony:4 error:&error];
     if (!ride) {
         NSLog(@"Failed to load sound: %@", error);
@@ -190,7 +191,7 @@
                         [((SoundObject *)_sounds[0]).sound play];
                     } else if (averageX > 0.1) {
                         NSLog(@"upper left");
-                        [((SoundObject *)_sounds[0]).sound play];
+                        [hihat play];
                     } else {
                         NSLog(@"upper center");
                         [((SoundObject *)_sounds[0]).sound play];
@@ -204,7 +205,7 @@
                         [((SoundObject *)_sounds[0]).sound play];
                     } else {
                         NSLog(@"lower center");
-                        [((SoundObject *)_sounds[0]).sound play];
+                        [kick play];
                     }
                 }
                 
