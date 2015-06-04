@@ -10,6 +10,7 @@
 #import <CoreMotion/CoreMotion.h>
 #import <AVFoundation/AVFoundation.h>
 #import <FISoundEngine.h>
+
 @interface ViewController : UIViewController {
     FISound *snare;
     FISound *hihat;
@@ -24,6 +25,7 @@
     CMAcceleration lastAcceleration;
     NSMutableArray *xValuesArray;
     BOOL stopUpdatingXValues;
+    int currentPosition;
 }
 
 @property (strong, nonatomic) CMMotionManager *motionManager;

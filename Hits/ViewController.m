@@ -74,6 +74,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
    
+    currentPosition = 0;
     NSError *error = nil;
     FISoundEngine *engine = [FISoundEngine sharedEngine];
     snare = [engine soundNamed:@"snare.mp3" maxPolyphony:4 error:&error];
@@ -146,34 +147,32 @@
                 double averageX = [self averageXValues];
                 [xValuesArray removeAllObjects];
                 NSLog(@"averageX: %f", averageX);
-                
-                if (attitude.pitch > .65) {
-                    if (averageX < -1.1) {
-                        NSLog(@"upper right");
-                        [ride play];
-                    } else if (averageX > 0.1) {
-                        NSLog(@"upper left");
-                        [crash play];
-                    } else {
-                        NSLog(@"upper center");
-                        [kick play];
-                    }
-                } else {
-                    if (averageX < -0.9) {
-                        NSLog(@"lower right");
-                        [tom play];
-                    } else if (averageX > 0.1) {
-                        NSLog(@"lower left");
-                        [hihat play];
-                    } else {
-                        NSLog(@"lower center");
-                        [snare play];
-                    }
+                if (averageX < -1.1) {
+                    currentPosition = MIN(1, currentPosition+1);
+                } else if (averageX > 0.1) {
+                    currentPosition = MAX(-1, currentPosition-1);
                 }
                 
-                
+                if (attitude.pitch > .65) {
+                    if (currentPosition == 1) {
+                        NSLog(@"upper right");
+                    } else if (currentPosition == -1) {
+                        NSLog(@"upper left");
+                    } else {
+                        NSLog(@"upper center");
+                    }
+                } else {
+                    if (currentPosition == 1) {
+                        NSLog(@"upper right");
+                    } else if (currentPosition == -1) {
+                        NSLog(@"upper left");
+                    } else {
+                        NSLog(@"upper center");
+                    }
+                }
             }
             lastAcceleration.z = 0;
+            stopUpdatingXValues = NO;
         }
     }];
 }
