@@ -10,8 +10,9 @@
 #import "FISoundEngine.h"
 #import <AudioToolbox/AudioToolbox.h>
 
-@interface ViewController ()
+@interface ViewController (){
 
+}
 @end
 
 @implementation ViewController
@@ -71,9 +72,12 @@
     NSLog(@"x: %f, y: %f, z: %f", acceleration.x, acceleration.y, acceleration.z);
 }
 
+
+
 - (void)viewDidLoad {
     [super viewDidLoad];
    
+    updateReferenceFrame = YES;
     currentPosition = 0;
     NSError *error = nil;
     FISoundEngine *engine = [FISoundEngine sharedEngine];
@@ -110,11 +114,19 @@
     _dataWindow = [NSMutableArray array];
     [self.motionManager setDeviceMotionUpdateInterval:.01];
     [self.motionManager startDeviceMotionUpdatesUsingReferenceFrame:CMAttitudeReferenceFrameXArbitraryCorrectedZVertical toQueue:self.deviceUpdateQueue withHandler:^(CMDeviceMotion *motion, NSError *error) {
-        lastFrame = motion.attitude;
         CMAttitude *attitude = motion.attitude;
-        if (referenceFrame) {
+        
+        lastFrame = [attitude copy];
+        
+        NSLog(@"yaw before: %f", attitude.yaw * (180/ M_PI));
+        
+        /*if (referenceFrame) {
+            NSLog(@"%@", referenceFrame.description);
             [attitude multiplyByInverseOfAttitude:referenceFrame];
-        }
+        }*/
+        
+        NSLog(@"yaw after: %f", attitude.yaw * (180 / M_PI));
+        
         CMAcceleration acceleration = [self correctedAcceleration:motion.userAcceleration forCurrentAttitude:attitude];
         double magnitude = [self magnitude:acceleration];
         if (magnitude < 1.2) {
@@ -135,11 +147,8 @@
             double angleInDegrees = [self angleBetweenV1:acceleration andV2:lastAcceleration] * 180/M_PI;
             if (angleInDegrees > 80) {
                 
-                NSLog(@"yaw: %f", attitude.yaw);
+                //NSLog(@"yaw: %f", attitude.yaw);
                 NSLog(@"pitch: %f", attitude.pitch);
-                //NSLog(@"magnet: %f", motion.magneticField)
-                
-                CMCalibratedMagneticField
                 
                 if (attitude.pitch > .50) {
                     if (attitude.yaw < -.8) {
@@ -161,6 +170,7 @@
                         [hihat play];
                     } else {
                         NSLog(@"lower center");
+                        //referenceFrame = lastFrame;
                         [snare play];
                     }
                 }

@@ -11,7 +11,7 @@
 #import <AVFoundation/AVFoundation.h>
 #import <FISoundEngine.h>
 
-@interface ViewController : UIViewController {
+@interface ViewController : UIViewController  {
     FISound *snare;
     FISound *hihat;
     FISound *tom2;
@@ -26,6 +26,7 @@
     NSMutableArray *xValuesArray;
     BOOL stopUpdatingXValues;
     int currentPosition;
+    BOOL updateReferenceFrame;
 }
 
 @property (strong, nonatomic) CMMotionManager *motionManager;
