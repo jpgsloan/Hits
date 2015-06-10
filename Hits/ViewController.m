@@ -33,7 +33,9 @@
  */
 
 - (IBAction)buttonPushed:(id)sender {
+    NSLog(@"CALIBRATED");
     referenceFrame = lastFrame;
+    oldRefFrame = oldLastFrame;
 }
 
 - (double)angleBetweenV1:(CMAcceleration)v1 andV2:(CMAcceleration)v2 {
@@ -116,16 +118,22 @@
     [self.motionManager startDeviceMotionUpdatesUsingReferenceFrame:CMAttitudeReferenceFrameXArbitraryCorrectedZVertical toQueue:self.deviceUpdateQueue withHandler:^(CMDeviceMotion *motion, NSError *error) {
         CMAttitude *attitude = motion.attitude;
         
-        lastFrame = [attitude copy];
+        oldLastFrame = [motion.attitude copy];
+        lastFrame = [[Attitude alloc] initWithAttitude:motion.attitude];
+
+        //NSLog(@"yaw before: %f", attitude.yaw * (180/ M_PI));
         
-        NSLog(@"yaw before: %f", attitude.yaw * (180/ M_PI));
+        if (referenceFrame && oldRefFrame) {
+            //NSLog(@"REFERENCE roll: %f, pitch: %f, yaw: %f", referenceFrame.roll, referenceFrame.pitch, referenceFrame.yaw);
+
+            attitudeRelativeToReferenceFrame = [referenceFrame relativeAttitude:motion.attitude];
+            [motion.attitude multiplyByInverseOfAttitude:oldRefFrame];
+            NSLog(@"new roll: %f, pitch: %f, yaw: %f", attitudeRelativeToReferenceFrame.roll, attitudeRelativeToReferenceFrame.pitch, attitudeRelativeToReferenceFrame.yaw);
+            NSLog(@"OLD roll: %f, pitch: %f, yaw: %f", motion.attitude.roll, motion.attitude.pitch, motion.attitude.yaw);
         
-        /*if (referenceFrame) {
-            NSLog(@"%@", referenceFrame.description);
-            [attitude multiplyByInverseOfAttitude:referenceFrame];
-        }*/
+        }
         
-        NSLog(@"yaw after: %f", attitude.yaw * (180 / M_PI));
+        //NSLog(@"yaw after: %f", attitude.yaw * (180 / M_PI));
         
         CMAcceleration acceleration = [self correctedAcceleration:motion.userAcceleration forCurrentAttitude:attitude];
         double magnitude = [self magnitude:acceleration];

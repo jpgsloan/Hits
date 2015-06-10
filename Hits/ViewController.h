@@ -10,6 +10,7 @@
 #import <CoreMotion/CoreMotion.h>
 #import <AVFoundation/AVFoundation.h>
 #import <FISoundEngine.h>
+#import "Attitude.h"
 
 @interface ViewController : UIViewController  {
     FISound *snare;
@@ -20,8 +21,11 @@
     FISound *crash;
     int lowMagCounter;
     BOOL didAccelerate;
-    CMAttitude *referenceFrame;
-    CMAttitude *lastFrame;
+    Attitude *referenceFrame;
+    Attitude *lastFrame;
+    Attitude *attitudeRelativeToReferenceFrame;
+    CMAttitude *oldRefFrame;
+    CMAttitude *oldLastFrame;
     CMAcceleration lastAcceleration;
     NSMutableArray *xValuesArray;
     BOOL stopUpdatingXValues;
